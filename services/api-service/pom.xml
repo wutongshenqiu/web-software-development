@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>
-    <artifactId>DormManagement</artifactId>
+    <artifactId>APIService</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>DormManagement</name>
-    <description>DormManagement</description>
+    <name>APIService</name>
+    <description>API Service</description>
     <properties>
         <java.version>19</java.version>
     </properties>

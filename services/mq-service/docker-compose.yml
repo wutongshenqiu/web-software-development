@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  mq-service:
+    image: rabbitmq:3-management
+    restart: unless-stopped
+    container_name: mq-service
+    ports:
+      - ${RABBITMQ_TLS_PORT}:5671
+      - ${RABBITMQ_PORT}:5672
+      - ${RABBITMQ_MANAGEMENT_PORT}:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+    volumes:
+      - ./data:/var/lib/rabbitmq

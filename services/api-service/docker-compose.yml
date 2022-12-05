@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  api-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    restart: unless-stopped
+    container_name: api-service
+    network_mode: host
+    env_file:
+      - .env
+  
+  cache-service:
+    image: redis:latest
+    restart: unless-stopped
+    container_name: cache-service
+    ports:
+      - ${REDIS_PORT}:6379
+    volumes:
+      - ./data/redis:/data

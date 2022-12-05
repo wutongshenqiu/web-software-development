@@ -31,4 +31,7 @@ public class UserInfoDto implements IBaseDto {
 
     @JsonProperty("class_name")
     private String className;
+
+    @JsonProperty("verification_code")
+    private String verificationCode = "Useless";
 }

@@ -50,6 +50,8 @@
 
 > 详见各个目录下的 .env 文件
 
+:book: 下列命令中的 `docker compose` 均可替换成 `docker-compose`
+
 1. 部署数据库服务
    
    ```bash

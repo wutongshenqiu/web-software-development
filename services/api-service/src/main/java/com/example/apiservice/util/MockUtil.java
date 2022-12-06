@@ -29,7 +29,7 @@ public class MockUtil {
         return Building.builder()
                 .name("5号楼")
                 .description("这是 5 号楼")
-                .imageUrl("https://xxx.xxx.com")
+                .imageUrl("https://thumbs.dreamstime.com/z/ramoji-film-city-hyderabad-inside-view-dummy-buildings-film-shooting-ramoji-film-city-amusement-park-dummy-buildings-film-135760408.jpg")
                 .buildingStatus(BuildingStatus.AVAILABLE)
                 .id(10L)
                 .updateTime(LocalDateTime.now())

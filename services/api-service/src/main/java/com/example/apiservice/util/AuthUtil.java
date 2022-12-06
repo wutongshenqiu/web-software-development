@@ -54,7 +54,7 @@ public class AuthUtil {
         return new LoginTokenResponseDto()
                 .setAccessToken(StpUtil.getTokenValue())
                 .setExpiresIn(7200)
-                .setTokenType("Bearer")
+                .setTokenType("bearer")
                 .setScope(device)
                 .setRefreshToken(getClientRefreshToken());
     }

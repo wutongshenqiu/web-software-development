@@ -31,7 +31,7 @@ public class RoomController {
     @GetMapping("/building")
     public ResponseEntity<ResponseDto> getBuildingDetail(@RequestParam Long id) {
         BuildingDetailResponseDto buildingDetailResponseDto = new BuildingDetailResponseDto().setName(id + "号楼")
-                .setImageUrl("http://xxx.xxx.com")
+                .setImageUrl("https://thumbs.dreamstime.com/z/ramoji-film-city-hyderabad-inside-view-dummy-buildings-film-shooting-ramoji-film-city-amusement-park-dummy-buildings-film-135760408.jpg")
                 .setDescription("这是" + id + "号楼");
 
         return ResponseEntity.ok(ResponseDto.ok().setMessage("Building detail").setData(buildingDetailResponseDto));
@@ -43,7 +43,7 @@ public class RoomController {
                 .setGender(Gender.FEMALE)
                 .setDescription("这是" + id + "号房间")
                 .setName(id + "号房间")
-                .setImageUrl("https://xxx.xxx.com");
+                .setImageUrl("https://thumbs.dreamstime.com/z/princeton-university-student-dormitory-new-jersey-december-meningitis-b-outbreak-strikes-several-students-residents-36066977.jpg");
 
         return ResponseEntity.ok(ResponseDto.ok().setMessage("Room detail").setData(roomDetailResponseDto));
     }

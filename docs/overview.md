@@ -80,7 +80,7 @@
    docker compose up -d
    ```
 
-**注意：:warning:**
+**:warning: 注意**
 
 - 需要先部署数据库服务和消息队列服务(被 API 服务和消费服务依赖)
 

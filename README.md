@@ -2,6 +2,10 @@
 
 此 repo 作为研一上学期课程《互联网软件开发技术与实践》作业项目
 
+## 整体设计
+
+见 [overview](/docs/overview.md)
+
 ## 数据库设计
 
 见 [design of database](/docs/database_design.md)

@@ -1,7 +1,6 @@
 package com.example.apiservice.domain.dto.user;
 
 import com.example.apiservice.domain.dto.IBaseDto;
-import com.example.apiservice.type.enumration.Gender;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -19,7 +18,7 @@ public class UserInfoDto implements IBaseDto {
 
     private String name;
 
-    private Gender gender;
+    private Integer gender;
 
     private String email;
 

@@ -45,7 +45,7 @@ public class AuthController {
         return ResponseEntity.ok(ResponseDto.ok().setMessage("操作成功").setData(loginTokenResponseDto));
     }
 
-    @GetMapping(value = "/logout")
+    @PostMapping(value = "/logout")
     public ResponseEntity<ResponseDto> logout() {
         AuthUtil.logout();
         return ResponseEntity.ok(ResponseDto.ok("操作成功"));

@@ -9,9 +9,7 @@ import com.example.apiservice.type.enumration.Gender;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @RestController
 @RequestMapping("/room")
@@ -25,7 +23,10 @@ public class RoomController {
             buildingList.add(buildingResponseDto);
         }
 
-        return ResponseEntity.ok(ResponseDto.ok().setMessage("Building info").setData(buildingList));
+        Map<String, List<BuildingResponseDto>> data = new HashMap<>();
+        data.put("rows", buildingList);
+
+        return ResponseEntity.ok(ResponseDto.ok().setMessage("Building info").setData(data));
     }
 
     @GetMapping("/building")

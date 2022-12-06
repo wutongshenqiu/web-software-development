@@ -23,10 +23,10 @@ public class UserController {
         User fakeUser = MockUtil.getFakeUser();
         UserInfoDto userInfoDto = new UserInfoDto().setUserId(fakeUser.getId())
                 .setName(fakeUser.getName())
-                .setGender(fakeUser.getGender())
+                .setGender(fakeUser.getGender().ordinal())
                 .setEmail(fakeUser.getEmail())
                 .setTelephone(fakeUser.getTelephone())
-                .setClassName("Class test")
+                .setClassName("测试班级")
                 .setStudentId("2201xxxxx")
                 .setLastLoginTime(LocalDateTime.now());
         ResponseDto responseDto = ResponseDto.ok().setMessage("User info").setData(userInfoDto);

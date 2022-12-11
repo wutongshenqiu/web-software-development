@@ -12,11 +12,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class FormServiceImpl extends BaseDoServiceImpl<Form, Long> implements IFormService {
+public class FormDoServiceImpl extends BaseDoServiceImpl<Form, Long> implements IFormService {
     private final IFormDao formDao;
     private final RabbitTemplate rabbitTemplate;
 
-    public FormServiceImpl(final IFormDao formDao, RabbitTemplate rabbitTemplate) {
+    public FormDoServiceImpl(final IFormDao formDao, final RabbitTemplate rabbitTemplate) {
         this.formDao = formDao;
         this.rabbitTemplate = rabbitTemplate;
     }

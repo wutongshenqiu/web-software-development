@@ -6,6 +6,8 @@ import java.util.List;
 public interface IBaseService<T, I extends Serializable> {
     T find(I id);
 
+    T findOrElseRaise(I id);
+
     List<T> findAll();
 
     boolean exists(I id);

@@ -6,8 +6,11 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
 import com.example.apiservice.domain.dto.ResponseDto;
 import com.example.apiservice.domain.dto.auth.*;
+import com.example.apiservice.domain.entity.Auth;
+import com.example.apiservice.service.IAuthService;
 import com.example.apiservice.util.AuthUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,16 +23,19 @@ import java.util.Vector;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
+    @Autowired
+    IAuthService authService;
+
     @PostMapping(value = "/login")
     public ResponseEntity<ResponseDto> login(@Valid @RequestBody LoginDto loginDto) {
-        // FIXME: just for test
-        if (loginDto.getUsername().equals("qiufeng") && loginDto.getPassword().equals("123456")) {
-            AuthUtil.login(10001);
-
-            return ResponseEntity.ok(ResponseDto.ok().setMessage("操作成功").setData(AuthUtil.getCurrentTokenDto()));
+        Auth auth = authService.findByUsername(loginDto.getUsername());
+        // TODO: should not use plain password
+        if (auth == null || !loginDto.getPassword().equals(auth.getPassword())) {
+            return new ResponseEntity<>(new ResponseDto().setCode(511002).setMessage("用户名或密码错误"), HttpStatus.UNAUTHORIZED);
         }
 
-        return new ResponseEntity<>(ResponseDto.ok().setMessage("用户名或密码错误"), HttpStatus.UNAUTHORIZED);
+        AuthUtil.login(auth.getUser().getId());
+        return ResponseEntity.ok(ResponseDto.ok().setMessage("操作成功").setData(AuthUtil.getCurrentTokenDto()));
     }
 
     @PostMapping(value = "/refreshtoken")

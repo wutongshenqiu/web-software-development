@@ -5,7 +5,11 @@ import com.example.apiservice.domain.dto.room.BuildingDetailResponseDto;
 import com.example.apiservice.domain.dto.room.BuildingResponseDto;
 import com.example.apiservice.domain.dto.room.EmptyRoomResponseDto;
 import com.example.apiservice.domain.dto.room.RoomDetailResponseDto;
-import com.example.apiservice.type.enumration.Gender;
+import com.example.apiservice.domain.entity.Building;
+import com.example.apiservice.domain.entity.Room;
+import com.example.apiservice.service.IBuildingService;
+import com.example.apiservice.service.IRoomService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,53 +18,76 @@ import java.util.*;
 @RestController
 @RequestMapping("/room")
 public class RoomController {
+    @Autowired
+    IBuildingService buildingService;
+
+    @Autowired
+    IRoomService roomService;
+
     @GetMapping("/buildinglist")
     public ResponseEntity<ResponseDto> getBuildingList() {
+        List<Building> buildings = buildingService.findAll();
+
         List<BuildingResponseDto> buildingList = new ArrayList<>();
-        for (long i = 1; i <= 10; i++) {
-            BuildingResponseDto buildingResponseDto = new BuildingResponseDto().setBuildingId(i)
-                    .setBuildingName(i + "号楼");
+        for (Building building : buildings) {
+            BuildingResponseDto buildingResponseDto = new BuildingResponseDto()
+                    .setBuildingId(building.getId())
+                    .setBuildingName(building.getName());
             buildingList.add(buildingResponseDto);
         }
 
-        Map<String, List<BuildingResponseDto>> data = new HashMap<>();
+        Map<String, Object> data = new HashMap<>();
         data.put("rows", buildingList);
 
-        return ResponseEntity.ok(ResponseDto.ok().setMessage("Building info").setData(data));
+        return ResponseEntity.ok(ResponseDto.ok().setMessage("宿舍楼信息").setData(data));
     }
 
     @GetMapping("/building")
     public ResponseEntity<ResponseDto> getBuildingDetail(@RequestParam Long id) {
-        BuildingDetailResponseDto buildingDetailResponseDto = new BuildingDetailResponseDto().setName(id + "号楼")
-                .setImageUrl("https://thumbs.dreamstime.com/z/ramoji-film-city-hyderabad-inside-view-dummy-buildings-film-shooting-ramoji-film-city-amusement-park-dummy-buildings-film-135760408.jpg")
-                .setDescription("这是" + id + "号楼");
+        Building building = buildingService.findOrElseRaise(id);
 
-        return ResponseEntity.ok(ResponseDto.ok().setMessage("Building detail").setData(buildingDetailResponseDto));
+        BuildingDetailResponseDto buildingDetailResponseDto = new BuildingDetailResponseDto()
+                .setName(building.getName())
+                .setImageUrl(building.getImageUrl())
+                .setDescription(building.getDescription());
+
+        return ResponseEntity.ok(ResponseDto.ok().setMessage("宿舍楼详细信息").setData(buildingDetailResponseDto));
     }
 
     @GetMapping("/room")
     public ResponseEntity<ResponseDto> getRoomDetail(@RequestParam Long id) {
-        RoomDetailResponseDto roomDetailResponseDto = new RoomDetailResponseDto().setBuildingId(5L)
-                .setGender(Gender.FEMALE)
-                .setDescription("这是" + id + "号房间")
-                .setName(id + "号房间")
-                .setImageUrl("https://thumbs.dreamstime.com/z/princeton-university-student-dormitory-new-jersey-december-meningitis-b-outbreak-strikes-several-students-residents-36066977.jpg");
+        Room room = roomService.findOrElseRaise(id);
 
-        return ResponseEntity.ok(ResponseDto.ok().setMessage("Room detail").setData(roomDetailResponseDto));
+        RoomDetailResponseDto roomDetailResponseDto = new RoomDetailResponseDto()
+                .setBuildingId(room.getId())
+                .setGender(room.getGender().ordinal())
+                .setDescription(room.getDescription())
+                .setName(room.getName())
+                .setImageUrl(room.getImageUrl());
+
+        return ResponseEntity.ok(ResponseDto.ok().setMessage("房间详情").setData(roomDetailResponseDto));
     }
 
-    @GetMapping("/room/empty")
-    public ResponseEntity<ResponseDto> getEmptyRoom(@RequestParam Gender gender) {
+    @GetMapping("/empty")
+    public ResponseEntity<ResponseDto> getEmptyRoom(@RequestParam Integer gender) {
+        // TODO: check valid gender
+        
+        List<Building> buildings = buildingService.findAll();
+
         List<EmptyRoomResponseDto> emptyRoomResponseDtoList = new ArrayList<>();
 
-        for (long i = 1; i <= 10; i++) {
+        for (Building building : buildings) {
             EmptyRoomResponseDto emptyRoomResponseDto = new EmptyRoomResponseDto()
-                    .setEmptyRoomNumber(new Random().nextLong(50))
-                    .setBuildingId(i)
+                    .setBuildingId(building.getId())
+                    .setEmptyRoomNumber(buildingService.getAvailableBedNumberByBuildingIdAndGender(building.getId(), gender))
                     .setGender(gender);
+
             emptyRoomResponseDtoList.add(emptyRoomResponseDto);
         }
 
-        return ResponseEntity.ok(ResponseDto.ok().setMessage("Empty rooms").setData(emptyRoomResponseDtoList));
+        Map<String, Object> data = new HashMap<>();
+        data.put("row", emptyRoomResponseDtoList);
+
+        return ResponseEntity.ok(ResponseDto.ok().setMessage("空房间数量").setData(data));
     }
 }

@@ -1,7 +1,6 @@
 package com.example.apiservice.domain.dto.room;
 
 import com.example.apiservice.domain.dto.IBaseDto;
-import com.example.apiservice.type.enumration.Gender;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -11,7 +10,7 @@ import lombok.experimental.Accessors;
 public class RoomDetailResponseDto implements IBaseDto {
     private String name;
 
-    private Gender gender;
+    private Integer gender;
 
     @JsonProperty("describe")
     private String description;

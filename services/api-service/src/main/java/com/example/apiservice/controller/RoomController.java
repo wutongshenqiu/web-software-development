@@ -9,6 +9,7 @@ import com.example.apiservice.domain.entity.Building;
 import com.example.apiservice.domain.entity.Room;
 import com.example.apiservice.service.IBuildingService;
 import com.example.apiservice.service.IRoomService;
+import com.example.apiservice.type.enumration.Gender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -60,7 +61,7 @@ public class RoomController {
 
         RoomDetailResponseDto roomDetailResponseDto = new RoomDetailResponseDto()
                 .setBuildingId(room.getId())
-                .setGender(room.getGender().ordinal())
+                .setGender(room.getGender())
                 .setDescription(room.getDescription())
                 .setName(room.getName())
                 .setImageUrl(room.getImageUrl());
@@ -71,6 +72,7 @@ public class RoomController {
     @GetMapping("/empty")
     public ResponseEntity<ResponseDto> getEmptyRoom(@RequestParam Integer gender) {
         // TODO: check valid gender
+        Gender g = Gender.values()[gender];
 
         List<Building> buildings = buildingService.findAll();
 
@@ -80,7 +82,7 @@ public class RoomController {
             EmptyRoomResponseDto emptyRoomResponseDto = new EmptyRoomResponseDto()
                     .setBuildingId(building.getId())
                     .setEmptyRoomNumber(buildingService.getAvailableBedNumberByBuildingIdAndGender(building.getId(), gender))
-                    .setGender(gender);
+                    .setGender(g);
 
             emptyRoomResponseDtoList.add(emptyRoomResponseDto);
         }

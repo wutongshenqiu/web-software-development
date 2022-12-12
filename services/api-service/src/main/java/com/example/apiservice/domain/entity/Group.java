@@ -14,7 +14,12 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "tb_group")
+@Table(
+        name = "tb_group",
+        indexes = {
+                @Index(columnList = "inviteCode")
+        }
+)
 public class Group extends Base {
     @ManyToOne
     @JoinColumn(name = "creator_id", nullable = false)
@@ -23,7 +28,7 @@ public class Group extends Base {
     @Column(length = 100, nullable = false)
     private String name;
 
-    @Column(length = 100, nullable = false)
+    @Column(length = 100, nullable = false, unique = true)
     private String inviteCode;
 
     @Column(length = 1000)

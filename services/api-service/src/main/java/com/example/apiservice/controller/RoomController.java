@@ -71,7 +71,7 @@ public class RoomController {
     @GetMapping("/empty")
     public ResponseEntity<ResponseDto> getEmptyRoom(@RequestParam Integer gender) {
         // TODO: check valid gender
-        
+
         List<Building> buildings = buildingService.findAll();
 
         List<EmptyRoomResponseDto> emptyRoomResponseDtoList = new ArrayList<>();

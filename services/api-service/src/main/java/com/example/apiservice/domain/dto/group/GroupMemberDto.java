@@ -9,7 +9,7 @@ import lombok.experimental.Accessors;
 @Data
 public class GroupMemberDto implements IBaseDto {
     @JsonProperty("student_id")
-    private Long studentId;
+    private String studentId;
 
     @JsonProperty("student_name")
     private String studentName;

@@ -9,5 +9,5 @@ import lombok.experimental.Accessors;
 @Data
 public class GroupTransferDto implements IBaseDto {
     @JsonProperty("student_id")
-    private Long studentId;
+    private String studentId;
 }

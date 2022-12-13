@@ -60,7 +60,7 @@ public class RoomController {
         Room room = roomService.findOrElseRaise(id);
 
         RoomDetailResponseDto roomDetailResponseDto = new RoomDetailResponseDto()
-                .setBuildingId(room.getId())
+                .setBuildingId(room.getBuilding().getId())
                 .setGender(room.getGender())
                 .setDescription(room.getDescription())
                 .setName(room.getName())

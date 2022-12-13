@@ -175,7 +175,7 @@ if __name__ == '__main__':
     BED_RANGE_PER_BUILDING = (4, 6)
     
     DB_NAME = "test"
-    SQL_DIR = Path('data')
+    SQL_DIR = Path('backup_sql')
     SQL_DIR.mkdir(parents=True, exist_ok=True)
     
     gen_insert_sql_withdb = functools.partial(gen_insert_sql, db_name=DB_NAME)

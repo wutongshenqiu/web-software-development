@@ -57,6 +57,10 @@
    ```bash
    cd services/db-service
    docker compose up -d
+   
+   # 导入数据(需要等待数据库初始化完成)
+   unzip backup_data.zip
+   docker compose exec -T db-service sh -c 'exec mysql -u"${MYSQL_USER}" -p"${MYSQL_PASSWORD}" --default-character-set=utf8mb4' < backup_data/.tb_all_ddl.sql
    ```
 
 2. 部署消息队列服务

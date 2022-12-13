@@ -70,21 +70,20 @@ public class RoomController {
     }
 
     @GetMapping("/empty")
-    public ResponseEntity<ResponseDto> getEmptyRoom(@RequestParam Integer gender) {
-        // TODO: check valid gender
-        Gender g = Gender.values()[gender];
-
+    public ResponseEntity<ResponseDto> getEmptyRoom() {
         List<Building> buildings = buildingService.findAll();
 
         List<EmptyRoomResponseDto> emptyRoomResponseDtoList = new ArrayList<>();
 
         for (Building building : buildings) {
-            EmptyRoomResponseDto emptyRoomResponseDto = new EmptyRoomResponseDto()
+            emptyRoomResponseDtoList.add(new EmptyRoomResponseDto()
                     .setBuildingId(building.getId())
-                    .setEmptyRoomNumber(buildingService.getAvailableBedNumberByBuildingIdAndGender(building.getId(), gender))
-                    .setGender(g);
-
-            emptyRoomResponseDtoList.add(emptyRoomResponseDto);
+                    .setEmptyRoomNumber(buildingService.getAvailableBedNumberByBuildingIdAndGender(building.getId(), Gender.MALE.ordinal()))
+                    .setGender(Gender.MALE));
+            emptyRoomResponseDtoList.add(new EmptyRoomResponseDto()
+                    .setBuildingId(building.getId())
+                    .setEmptyRoomNumber(buildingService.getAvailableBedNumberByBuildingIdAndGender(building.getId(), Gender.FEMALE.ordinal()))
+                    .setGender(Gender.FEMALE));
         }
 
         Map<String, Object> data = new HashMap<>();

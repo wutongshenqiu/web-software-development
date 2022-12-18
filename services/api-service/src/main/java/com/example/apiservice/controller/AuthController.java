@@ -1,5 +1,7 @@
 package com.example.apiservice.controller;
 
+import cn.dev33.satoken.annotation.SaIgnore;
+import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.session.TokenSign;
 import cn.dev33.satoken.stp.StpUtil;
@@ -26,6 +28,7 @@ public class AuthController {
     @Autowired
     IAuthService authService;
 
+    @SaIgnore
     @PostMapping(value = "/login")
     public ResponseEntity<ResponseDto> login(@Valid @RequestBody LoginDto loginDto) {
         Auth auth = authService.findByUsername(loginDto.getUsername());
@@ -38,13 +41,14 @@ public class AuthController {
         return ResponseEntity.ok(ResponseDto.ok().setMessage("操作成功").setData(AuthUtil.getCurrentTokenDto()));
     }
 
+    // FIXME: 这里逻辑还有问题，获取 refreshtoken 应该不需要用户登录
+    @SaIgnore
     @PostMapping(value = "/refreshtoken")
-    public ResponseEntity<ResponseDto> refreshToken(@Valid @RequestBody RefreshTokenDto refreshTokenDto) {
-        if (!refreshTokenDto.getRefreshToken().equals(AuthUtil.getClientRefreshToken()))
-            return new ResponseEntity<>(ResponseDto.ok().setMessage("非法的 Token"), HttpStatus.UNAUTHORIZED);
-
-        StpUtil.logoutByTokenValue(StpUtil.getTokenValue());
-        AuthUtil.login(10001);
+    public ResponseEntity<ResponseDto> refreshToken(@Valid @RequestBody RefreshTokenDto refreshTokenDto) throws NotLoginException {
+        if (!refreshTokenDto.getRefreshToken().equals(AuthUtil.getClientRefreshToken())) {
+            throw NotLoginException.newInstance(StpUtil.getLoginType(), "refresh token 不匹配");
+        }
+        AuthUtil.login(StpUtil.getLoginIdAsLong());
 
         LoginTokenResponseDto loginTokenResponseDto = AuthUtil.getCurrentTokenDto();
 

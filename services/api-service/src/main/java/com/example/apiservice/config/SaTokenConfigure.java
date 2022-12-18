@@ -1,7 +1,6 @@
 package com.example.apiservice.config;
 
 import cn.dev33.satoken.interceptor.SaInterceptor;
-import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.StpUtil;
 import com.example.apiservice.util.AuthUtil;
 import com.example.apiservice.util.HttpReqRespUtil;
@@ -16,24 +15,17 @@ public class SaTokenConfigure implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         // 注册 Sa-Token 拦截器
-        registry.addInterceptor(new SaInterceptor(handle -> checkLoginAndOverrideIp()))
-                .addPathPatterns("/**")
-                .excludePathPatterns("/auth/login")
-                .excludePathPatterns("/auth/refreshtoken");
+        registry.addInterceptor(new SaInterceptor(handle -> checkLoginAndOverrideIp())).addPathPatterns("/**");
     }
 
     private void checkLoginAndOverrideIp() {
         StpUtil.checkLogin();
 
-        SaSession session = StpUtil.getSession();
-        String device = StpUtil.getLoginDevice();
         String ip = HttpReqRespUtil.getClientIpAddress();
         String previousIp = AuthUtil.getClientPreviousIpAddress();
 
         if (previousIp == null || !previousIp.equals(ip)) {
-            session.set(device, ip);
-            StpUtil.logoutByTokenValue(StpUtil.getTokenValue());
-            StpUtil.login(10001, device);
+            AuthUtil.login(StpUtil.getLoginIdAsLong());
         }
     }
 }

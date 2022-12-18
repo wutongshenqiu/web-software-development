@@ -66,16 +66,16 @@ public class FormController {
         formService.save(form);
 
         List<GroupMember> groupMembers = groupMemberService.findGroupMembersByGroupId(group.getId());
-        List<User> members = new ArrayList<>();
+        List<User> users = new ArrayList<>();
         for (GroupMember groupMember : groupMembers) {
-            members.add(groupMember.getMember());
+            users.add(groupMember.getMember());
         }
 
         FormInRabbitDto formInRabbitDto = new FormInRabbitDto()
                 .setFormId(form.getId())
                 .setGroupId(group.getId())
                 .setBuildingId(building.getId())
-                .setGroupMembers(members);
+                .setGroupMembersFromUsers(users);
         formService.sendFormToMQ(formInRabbitDto);
         log.info(formInRabbitDto.toString());
 
@@ -97,7 +97,7 @@ public class FormController {
                     .setBuildingName(form.getBuilding().getName())
                     .setGroupName(form.getGroup().getName())
                     .setSubmitTime(form.getCreateTime())
-                    .setResultContent("这里是对订单结果的描述");
+                    .setResultContent(form.getResultContent());
             formDetailDtoList.add(formDetailDto);
         }
         Map<String, Object> data = new HashMap<>();

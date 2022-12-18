@@ -76,17 +76,17 @@ public class GroupController {
     }
 
     @PostMapping("/del")
-    public ResponseEntity<ResponseDto> delete(@Valid @RequestBody GroupDeleteDto groupDeleteDto) {
-        Group group = groupService.findOrElseRaise(groupDeleteDto.getTeamId());
-
+    public ResponseEntity<ResponseDto> delete() {
         // 删除队伍必须满足如下条件
         // 1. 必须是创建者
-        if (!group.getCreator().getId().equals(StpUtil.getLoginIdAsLong())) {
+        Group group = groupService.findActiveGroupByCreatorId(StpUtil.getLoginIdAsLong());
+        if (group == null) {
             return new ResponseEntity<>(
                     ResponseDto.ok().setMessage("不是队伍创建者"),
                     HttpStatus.FORBIDDEN
             );
         }
+
         // 2. 队伍处于 active 状态
         if (!group.getGroupStatus().equals(GroupStatus.ACTIVE)) {
             return new ResponseEntity<>(
@@ -105,7 +105,7 @@ public class GroupController {
         for (GroupMember groupMember : groupMembers) {
             groupMember.setGroupMemberStatus(GroupMemberStatus.DELETED);
             groupMember.setUpdateTime(LocalDateTime.now());
-            groupMember.setLeaveTime(LocalDateTime.now());
+//            groupMember.setLeaveTime(LocalDateTime.now());
             groupMemberService.save(groupMember);
         }
 
@@ -160,19 +160,12 @@ public class GroupController {
     }
 
     @PostMapping("/quit")
-    public ResponseEntity<ResponseDto> quit(@Valid @RequestBody GroupQuitDto groupQuitDto) {
+    public ResponseEntity<ResponseDto> quit() {
         Long userId = StpUtil.getLoginIdAsLong();
 
         Group group = groupService.findActiveGroupByUserId(userId);
         // 退出队伍不符合条件的情况
-        // 1. group id 和已加入的队伍 id 不相等
-        if (!group.getId().equals(groupQuitDto.getGroupId())) {
-            return new ResponseEntity<>(
-                    ResponseDto.ok().setMessage("未加入队伍 " + groupQuitDto.getGroupId()),
-                    HttpStatus.FORBIDDEN
-            );
-        }
-        // 2. 是队长或者且人数不为 1
+        // 是队长或者且人数不为 1
         if (group.getCreator().getId().equals(userId)) {
             List<GroupMember> groupMembers = groupMemberService.findActiveGroupMembersByGroupId(group.getId());
             if (groupMembers.size() > 1) {

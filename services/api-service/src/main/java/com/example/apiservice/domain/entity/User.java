@@ -51,6 +51,7 @@ public class User extends Base {
     @OneToMany(mappedBy = "user")
     private List<Auth> auths;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "tb_user_role",

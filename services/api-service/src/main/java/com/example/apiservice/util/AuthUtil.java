@@ -42,7 +42,7 @@ public class AuthUtil {
 
     public static DeviceInfoInRedisDto getDeviceInfo() {
         StpUtil.checkLogin();
-        String device = StpUtil.getLoginDevice();
+        String device = HttpReqRespUtil.getClientDevice();
         SaSession session = StpUtil.getSession();
 
         return (DeviceInfoInRedisDto) session.get(device);

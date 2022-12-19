@@ -1,4 +1,4 @@
-server { # simple reverse-proxy
+server {
   listen       ${NGINX_PORT};
   server_name  localhost;
   access_log   logs/domain2.access.log  main;

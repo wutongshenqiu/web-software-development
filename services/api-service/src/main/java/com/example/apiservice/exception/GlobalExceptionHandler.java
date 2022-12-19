@@ -3,6 +3,9 @@ package com.example.apiservice.exception;
 import cn.dev33.satoken.exception.NotLoginException;
 import com.example.apiservice.domain.dto.ExceptionDto;
 import com.example.apiservice.domain.dto.ResponseDto;
+import com.example.apiservice.exception.form.QueryFormException;
+import com.example.apiservice.exception.form.SubmitFormException;
+import com.example.apiservice.exception.group.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -59,9 +62,88 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(
                 new ExceptionDto()
                         .setMessage(ex.getMessage())
-                        .setCode(200),
+                        .setCode(ex.getCode()),
                 HttpStatus.NOT_FOUND
         );
     }
 
+    @ExceptionHandler(CreateGroupException.class)
+    public ResponseEntity<?> createGroupException(CreateGroupException ex) {
+        return new ResponseEntity<>(
+                new ExceptionDto()
+                        .setCode(ex.getCode())
+                        .setMessage(ex.getMessage()),
+                HttpStatus.FORBIDDEN
+        );
+    }
+
+    @ExceptionHandler(DeleteGroupException.class)
+    public ResponseEntity<?> deleteGroupException(DeleteGroupException ex) {
+        return new ResponseEntity<>(
+                new ExceptionDto()
+                        .setCode(ex.getCode())
+                        .setMessage(ex.getMessage()),
+                HttpStatus.FORBIDDEN
+        );
+    }
+
+    @ExceptionHandler(JoinGroupException.class)
+    public ResponseEntity<?> joinGroupException(JoinGroupException ex) {
+        return new ResponseEntity<>(
+                new ExceptionDto()
+                        .setCode(ex.getCode())
+                        .setMessage(ex.getMessage()),
+                HttpStatus.FORBIDDEN
+        );
+    }
+
+    @ExceptionHandler(QuitGroupException.class)
+    public ResponseEntity<?> quitGroupException(QuitGroupException ex) {
+        return new ResponseEntity<>(
+                new ExceptionDto()
+                        .setCode(ex.getCode())
+                        .setMessage(ex.getMessage()),
+                HttpStatus.FORBIDDEN
+        );
+    }
+
+    @ExceptionHandler(QueryGroupException.class)
+    public ResponseEntity<?> queryGroupException(QueryGroupException ex) {
+        return new ResponseEntity<>(
+                new ExceptionDto()
+                        .setCode(ex.getCode())
+                        .setMessage(ex.getMessage()),
+                HttpStatus.FORBIDDEN
+        );
+    }
+
+    @ExceptionHandler(TransferGroupException.class)
+    public ResponseEntity<?> transferGroupException(TransferGroupException ex) {
+        return new ResponseEntity<>(
+                new ExceptionDto()
+                        .setCode(ex.getCode())
+                        .setMessage(ex.getMessage()),
+                HttpStatus.FORBIDDEN
+        );
+    }
+
+    @ExceptionHandler(SubmitFormException.class)
+    public ResponseEntity<?> createFormException(SubmitFormException ex) {
+        return new ResponseEntity<>(
+                new ExceptionDto()
+                        .setCode(ex.getCode())
+                        .setMessage(ex.getMessage()),
+                HttpStatus.FORBIDDEN
+        );
+    }
+
+    @ExceptionHandler(QueryFormException.class)
+    public ResponseEntity<?> queryFormException(QueryFormException ex) {
+        return new ResponseEntity<>(
+                new ExceptionDto()
+                        .setCode(ex.getCode())
+                        .setMessage(ex.getMessage()),
+                HttpStatus.FORBIDDEN
+        );
+    }
 }

@@ -63,7 +63,6 @@ public class AuthController {
 
     @GetMapping(value = "/getToken")
     public SaResult getToken() {
-        SaSession session = StpUtil.getSession();
         String device = StpUtil.getLoginDevice();
         DeviceInfoInRedisDto deviceInfoInRedisDto = AuthUtil.getDeviceInfo();
 

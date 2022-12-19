@@ -9,6 +9,7 @@ import com.example.apiservice.domain.entity.StudentInfo;
 import com.example.apiservice.domain.entity.User;
 import com.example.apiservice.service.IGroupMemberService;
 import com.example.apiservice.service.IGroupService;
+import com.example.apiservice.service.ISysConfigService;
 import com.example.apiservice.service.IUserService;
 import com.example.apiservice.type.enumration.GroupMemberStatus;
 import com.example.apiservice.type.enumration.GroupStatus;
@@ -36,6 +37,9 @@ public class GroupController {
 
     @Autowired
     IUserService userService;
+
+    @Autowired
+    ISysConfigService sysConfigService;
 
     @PostMapping("/create")
     public ResponseEntity<ResponseDto> create(@Valid @RequestBody GroupCreateDto groupCreateDto) {
@@ -138,10 +142,18 @@ public class GroupController {
                     HttpStatus.FORBIDDEN
             );
         }
-        // 3. 性别一致
+        // 3. 与队长性别一致
         if (!group.getCreator().getGender().equals(user.getGender())) {
             return new ResponseEntity<>(
                     ResponseDto.ok().setMessage("与队长性别不一致"),
+                    HttpStatus.FORBIDDEN
+            );
+        }
+        // 4. 队伍人数未满
+        List<GroupMember> members = groupMemberService.findActiveGroupMembersByGroupId(group.getId());
+        if (members.size() >= sysConfigService.getGroupNumber()) {
+            return new ResponseEntity<>(
+                    ResponseDto.ok().setMessage("队伍人数已满"),
                     HttpStatus.FORBIDDEN
             );
         }

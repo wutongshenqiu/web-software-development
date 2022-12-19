@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  proxy-service:
+    image: nginx:latest
+    restart: unless-stopped
+    container_name: proxy-service
+    network_mode: host
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./frontend:/var/www:ro
+    env_file:
+      - .env
+    command: [nginx-debug, '-g', 'daemon off;']

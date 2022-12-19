@@ -3,13 +3,11 @@ package com.example.apiservice.controller;
 import com.example.apiservice.domain.dto.ResponseDto;
 import com.example.apiservice.domain.dto.room.BuildingDetailResponseDto;
 import com.example.apiservice.domain.dto.room.BuildingResponseDto;
-import com.example.apiservice.domain.dto.room.EmptyRoomResponseDto;
 import com.example.apiservice.domain.dto.room.RoomDetailResponseDto;
 import com.example.apiservice.domain.entity.Building;
 import com.example.apiservice.domain.entity.Room;
 import com.example.apiservice.service.IBuildingService;
 import com.example.apiservice.service.IRoomService;
-import com.example.apiservice.type.enumration.Gender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -71,23 +69,8 @@ public class RoomController {
 
     @GetMapping("/empty")
     public ResponseEntity<ResponseDto> getEmptyRoom() {
-        List<Building> buildings = buildingService.findAll();
-
-        List<EmptyRoomResponseDto> emptyRoomResponseDtoList = new ArrayList<>();
-
-        for (Building building : buildings) {
-            emptyRoomResponseDtoList.add(new EmptyRoomResponseDto()
-                    .setBuildingId(building.getId())
-                    .setEmptyRoomNumber(buildingService.getAvailableBedNumberByBuildingIdAndGender(building.getId(), Gender.MALE.ordinal()))
-                    .setGender(Gender.MALE));
-            emptyRoomResponseDtoList.add(new EmptyRoomResponseDto()
-                    .setBuildingId(building.getId())
-                    .setEmptyRoomNumber(buildingService.getAvailableBedNumberByBuildingIdAndGender(building.getId(), Gender.FEMALE.ordinal()))
-                    .setGender(Gender.FEMALE));
-        }
-
         Map<String, Object> data = new HashMap<>();
-        data.put("row", emptyRoomResponseDtoList);
+        data.put("row", buildingService.getAllAvailableBedNumbers());
 
         return ResponseEntity.ok(ResponseDto.ok().setMessage("空房间数量").setData(data));
     }

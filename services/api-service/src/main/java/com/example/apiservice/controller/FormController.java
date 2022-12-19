@@ -5,10 +5,8 @@ import com.example.apiservice.domain.dto.ResponseDto;
 import com.example.apiservice.domain.dto.form.*;
 import com.example.apiservice.domain.entity.*;
 import com.example.apiservice.service.*;
-import com.example.apiservice.type.enumration.FormStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,62 +21,11 @@ public class FormController {
     IFormService formService;
 
     @Autowired
-    IBuildingService buildingService;
-
-    @Autowired
     IGroupService groupService;
-
-    @Autowired
-    IGroupMemberService groupMemberService;
-
-    @Autowired
-    IUserService userService;
 
     @PostMapping("/create")
     public ResponseEntity<ResponseDto> create(@Valid @RequestBody FormCreateDto formCreateDto) {
-        // 1. 宿舍楼不存在
-        Building building = buildingService.findOrElseRaise(formCreateDto.getBuildingId());
-
-        // 2. 未组队
-        User user = userService.findOrElseRaise(StpUtil.getLoginIdAsLong());
-        Group group = groupService.findActiveGroupByUserId(user.getId());
-        if (group == null) {
-            return new ResponseEntity<>(
-                    ResponseDto.ok().setMessage("请先组队"),
-                    HttpStatus.FORBIDDEN
-            );
-        }
-
-        // 3. 队伍号不匹配
-        if (!group.getId().equals(formCreateDto.getGroupId())) {
-            return new ResponseEntity<>(
-                    ResponseDto.ok().setMessage("队伍号不匹配"),
-                    HttpStatus.FORBIDDEN
-            );
-        }
-
-        Form form = Form.builder()
-                .submitter(user)
-                .group(group)
-                .building(building)
-                .formStatus(FormStatus.CREATED)
-                .build();
-        formService.save(form);
-
-        List<GroupMember> groupMembers = groupMemberService.findGroupMembersByGroupId(group.getId());
-        List<User> users = new ArrayList<>();
-        for (GroupMember groupMember : groupMembers) {
-            users.add(groupMember.getMember());
-        }
-
-        FormInRabbitDto formInRabbitDto = new FormInRabbitDto()
-                .setFormId(form.getId())
-                .setGroupId(group.getId())
-                .setBuildingId(building.getId())
-                .setGroupMembersFromUsers(users);
-        formService.sendFormToMQ(formInRabbitDto);
-        log.info(formInRabbitDto.toString());
-
+        Form form = formService.submitForm(StpUtil.getLoginIdAsLong(), formCreateDto.getGroupId(), formCreateDto.getBuildingId());
         FormCreateResponseDto formCreateResponseDto = new FormCreateResponseDto()
                 .setFormId(form.getId());
 
@@ -108,16 +55,7 @@ public class FormController {
 
     @GetMapping("/info")
     public ResponseEntity<ResponseDto> getFormInfo(@RequestParam Long order_id) {
-        Form form = formService.findOrElseRaise(order_id);
-
-        // 只能获取自身队伍的订单信息
-        Group group = groupService.findActiveGroupByUserId(StpUtil.getLoginIdAsLong());
-        if (!group.getId().equals(form.getGroup().getId())) {
-            return new ResponseEntity<>(
-                    ResponseDto.ok().setMessage("订单不存在"),
-                    HttpStatus.NOT_FOUND
-            );
-        }
+        Form form = formService.findBySubmitterId(StpUtil.getLoginIdAsLong(), order_id);
 
         // 0 作为没有房间的默认值
         Room room = form.getRoom();

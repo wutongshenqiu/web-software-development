@@ -167,6 +167,7 @@ def gen_insert_sql(db_name: str, model: BaseFakeModel, table_name: Optional[str]
 if __name__ == '__main__':
     from pathlib import Path
     
+    TEST_USER_NUMBER = 10
     USER_NUMBER = 2000
     BUILDING_NUMBER = 10
     ROOM_NUMBER = 500
@@ -175,25 +176,31 @@ if __name__ == '__main__':
     BED_RANGE_PER_BUILDING = (4, 6)
     
     DB_NAME = "test"
-    SQL_DIR = Path('backup_sql')
+    SQL_DIR = Path('sql_data')
     SQL_DIR.mkdir(parents=True, exist_ok=True)
     
     gen_insert_sql_withdb = functools.partial(gen_insert_sql, db_name=DB_NAME)
     
-    fake_user_models = [FakeUserModel(id=1, name="秋风")]
-    for i in range(2, USER_NUMBER + 1):
+    fake_user_models = [
+        FakeUserModel(id=i, name=f'测试{i}')
+        for i in range(1, TEST_USER_NUMBER + 1)]
+    for i in range(TEST_USER_NUMBER + 1, USER_NUMBER + 1):
         fake_user_models.append(FakeUserModel(id=i))
     with (SQL_DIR / 'tb_user.sql').open('w', encoding='utf8') as f:
         f.write('\n'.join((gen_insert_sql_withdb(model=model) for model in fake_user_models)))
     
-    fake_student_info_models = [FakeStudentInfoModel(id=1, user_id=1, student_id="8888888888")]
-    for i in range(2, USER_NUMBER + 1):
+    fake_student_info_models = [
+        FakeStudentInfoModel(id=i, user_id=i, student_id=f"{i:08d}")
+        for i in range(1, TEST_USER_NUMBER + 1)]
+    for i in range(TEST_USER_NUMBER + 1, USER_NUMBER + 1):
         fake_student_info_models.append(FakeStudentInfoModel(id=i, user_id=i))
     with (SQL_DIR / 'tb_student_info.sql').open('w', encoding='utf8') as f:
         f.write('\n'.join((gen_insert_sql_withdb(model=model) for model in fake_student_info_models)))
         
-    fake_auth_models = [FakeAuthModel(id=1, user_id=1, username="qiufeng", password="123456")]
-    for i in range(2, USER_NUMBER + 1):
+    fake_auth_models = [
+        FakeAuthModel(id=i, user_id=i, username=f'test{i}', password="123456")
+        for i in range(1, TEST_USER_NUMBER + 1)]
+    for i in range(TEST_USER_NUMBER + 1, USER_NUMBER + 1):
         fake_auth_models.append(FakeAuthModel(id=i, user_id=i))
     with (SQL_DIR / 'tb_auth.sql').open('w', encoding='utf8') as f:
         f.write('\n'.join((gen_insert_sql_withdb(model=model) for model in fake_auth_models)))
@@ -213,7 +220,6 @@ if __name__ == '__main__':
     with (SQL_DIR / 'tb_room.sql').open('w', encoding='utf8') as f:
         f.write('\n'.join((gen_insert_sql_withdb(model=model) for model in fake_room_models)))            
 
-    
     bed_number_per_room = faker.random_int_list(total=BED_NUMBER, length=ROOM_NUMBER, x_range=BED_RANGE_PER_BUILDING)
     fake_bed_models = []
     _bed_id = 1
@@ -223,7 +229,6 @@ if __name__ == '__main__':
             _bed_id += 1
     with (SQL_DIR / 'tb_bed.sql').open('w', encoding='utf8') as f:
         f.write('\n'.join((gen_insert_sql_withdb(model=model) for model in fake_bed_models)))    
-    
     
     fake_model_list = [
         fake_user_models,

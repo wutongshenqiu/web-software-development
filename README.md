@@ -2,6 +2,10 @@
 
 此 repo 作为研一上学期课程《互联网软件开发技术与实践》作业项目
 
+## 服务部署
+
+见 [deploy](/docs/deploy.md)
+
 ## 整体设计
 
 见 [overview](/docs/overview.md)
@@ -34,6 +38,6 @@
 
 - [x] 配置 docker compose
 
-- [ ] 使用 nginx 进行反向代理
+- [x] 使用 nginx 进行反向代理
 
 - [ ] 配置 github action

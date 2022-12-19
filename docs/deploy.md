@@ -36,8 +36,8 @@
    git clone https://github.com/wutongshenqiu/web-software-development.git
    cd web-software-development
    
-   # 如果由于网络原因，导致上述命令下载过慢或者不可用，可以尝试使用镜像服务
-   # git clone https://gitclone.com/github.com/wutongshenqiu/web-software-development
+   # 如果由于网络原因，导致上述命令下载过慢或者不可用，可以尝试从 gitee clone
+   # https://gitee.com/mymashiro/web-software-development.git
    ```
 
 :warning: 以下所有服务的启动命令均是相对于根目录而言的
@@ -103,8 +103,6 @@
    ```
 
 若所有服务均部署成功，则可以通过主机 ip 和 nginx 对外提供的端口进行访问
-
-
 
 **:book: Tips：**
 

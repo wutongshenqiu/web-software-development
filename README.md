@@ -22,6 +22,10 @@
 
 见 [design of login](/docs/login_design.md)
 
+## 功能性测试
+
+见 [function testing](/docs/functional_testing.md)
+
 ## TODO
 
 - [x] 确定数据库和接口

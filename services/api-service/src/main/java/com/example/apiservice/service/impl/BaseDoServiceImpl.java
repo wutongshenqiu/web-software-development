@@ -50,4 +50,9 @@ public abstract class BaseDoServiceImpl<T extends Base, I extends Serializable> 
     public void delete(I id) {
         getBaseDao().deleteById(id);
     }
+
+    @Override
+    public void saveAndFlush(T entity) {
+        getBaseDao().saveAndFlush(entity);
+    }
 }

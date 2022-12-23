@@ -10,6 +10,7 @@ import com.example.apiservice.service.*;
 import com.example.apiservice.type.enumration.FormStatus;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +55,7 @@ public class FormDoServiceImpl extends BaseDoServiceImpl<Form, Long> implements 
         return form.get();
     }
 
+    @Transactional
     @Override
     public Form submitForm(Long userId, Long groupId, Long buildingId) throws SubmitFormException {
         User user = userService.findOrElseRaise(userId);
@@ -72,7 +74,7 @@ public class FormDoServiceImpl extends BaseDoServiceImpl<Form, Long> implements 
                 .building(building)
                 .formStatus(FormStatus.CREATED)
                 .build();
-        save(form);
+        saveAndFlush(form);
 
         List<GroupMember> groupMembers = groupService.findGroupMembersByGroupId(group.getId());
         List<User> users = new ArrayList<>();

@@ -50,8 +50,8 @@ public class UserController {
                 .setClassName("测试班级")
                 .setStudentId(studentInfo.getStudentId())
                 .setLastLoginTime(LocalDateTime.now());
+        // TODO: must execute after save to db
         ResponseDto responseDto = ResponseDto.ok().setMessage("个人信息").setData(userInfoDto);
-        log.info(user.toString());
 
         return ResponseEntity.ok(responseDto);
     }

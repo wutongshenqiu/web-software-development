@@ -15,4 +15,6 @@ public interface IBaseService<T, I extends Serializable> {
     void delete(I id);
 
     void save(T entity);
+
+    void saveAndFlush(T entity);
 }

@@ -227,6 +227,7 @@ public class GroupDoServiceImpl extends BaseDoServiceImpl<Group, Long> implement
             if (studentInfo.getStudentId().equals(assigneeStudentId)) {
                 group.setCreator(member);
                 save(group);
+                return;
             }
         }
 

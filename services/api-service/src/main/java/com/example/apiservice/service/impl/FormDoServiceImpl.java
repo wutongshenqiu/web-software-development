@@ -4,11 +4,13 @@ import com.example.apiservice.dao.IBaseDao;
 import com.example.apiservice.dao.IFormDao;
 import com.example.apiservice.domain.dto.form.FormInRabbitDto;
 import com.example.apiservice.domain.entity.*;
+import com.example.apiservice.event.FormCreateEvent;
 import com.example.apiservice.exception.form.QueryFormException;
 import com.example.apiservice.exception.form.SubmitFormException;
 import com.example.apiservice.service.*;
 import com.example.apiservice.type.enumration.FormStatus;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,13 +25,20 @@ public class FormDoServiceImpl extends BaseDoServiceImpl<Form, Long> implements 
     private final IBuildingService buildingService;
     private final IUserService userService;
     private final IGroupService groupService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
-    public FormDoServiceImpl(final IFormDao formDao, final RabbitTemplate rabbitTemplate, final IBuildingService buildingService, final IUserService userService, final IGroupService groupService) {
+    public FormDoServiceImpl(final IFormDao formDao,
+                             final RabbitTemplate rabbitTemplate,
+                             final IBuildingService buildingService,
+                             final IUserService userService,
+                             final IGroupService groupService,
+                             final ApplicationEventPublisher applicationEventPublisher) {
         this.formDao = formDao;
         this.rabbitTemplate = rabbitTemplate;
         this.buildingService = buildingService;
         this.userService = userService;
         this.groupService = groupService;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Override
@@ -87,7 +96,9 @@ public class FormDoServiceImpl extends BaseDoServiceImpl<Form, Long> implements 
                 .setGroupId(group.getId())
                 .setBuildingId(building.getId())
                 .setGroupMembersFromUsers(users);
-        sendFormToMQ(formInRabbitDto);
+
+        final FormCreateEvent event = new FormCreateEvent(this, formInRabbitDto);
+        applicationEventPublisher.publishEvent(event);
 
         return form;
     }

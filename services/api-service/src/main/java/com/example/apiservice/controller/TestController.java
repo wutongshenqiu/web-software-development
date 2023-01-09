@@ -1,10 +1,12 @@
 package com.example.apiservice.controller;
 
 import cn.dev33.satoken.annotation.SaIgnore;
+import com.example.apiservice.domain.dto.room.EmptyRoomResponseDto;
 import com.example.apiservice.domain.entity.Auth;
 import com.example.apiservice.domain.entity.StudentInfo;
 import com.example.apiservice.domain.entity.User;
 import com.example.apiservice.service.IAuthService;
+import com.example.apiservice.service.IBuildingService;
 import com.example.apiservice.service.IStudentService;
 import com.example.apiservice.service.IUserService;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +30,9 @@ public class TestController {
 
     @Autowired
     IStudentService studentService;
+
+    @Autowired
+    IBuildingService buildingService;
 
     @GetMapping("/users")
     public List<?> getAllUsers() {
@@ -59,5 +64,10 @@ public class TestController {
         }
 
         return Arrays.asList(idToUserInfo.values().toArray());
+    }
+
+    @GetMapping("/emptybeds")
+    public List<EmptyRoomResponseDto> getAllEmptyRoom() {
+        return buildingService.getAllAvailableBedNumbers();
     }
 }

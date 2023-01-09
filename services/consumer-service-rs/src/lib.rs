@@ -1,4 +1,4 @@
-use chrono::NaiveDateTime;
+use chrono::{NaiveDateTime, offset::Local};
 use mysql::prelude::*;
 use mysql::{PooledConn, Row};
 use tracing::{debug, error};
@@ -90,8 +90,8 @@ impl Processor {
                 self.conn.query_drop(sql).unwrap();
 
                 let sql = format!(
-                    "UPDATE tb_form SET form_status=3, result_content='成功', room_id={} WHERE id={}",
-                    room_id, order_info.order_id
+                    "UPDATE tb_form SET form_status=3, result_content='成功', room_id={}, finish_time='{}' WHERE id={}",
+                    room_id, Local::now().naive_local(), order_info.order_id
                 );
                 debug!("{}", sql);
                 self.conn.query_drop(sql).unwrap();
